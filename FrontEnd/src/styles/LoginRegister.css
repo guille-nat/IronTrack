@@ -1,0 +1,24 @@
+.content-login{
+    border: solid 3px #555;
+    width: 80%;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.content-login form{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+.content-form{
+    display: flex;
+    flex-direction: column;
+    margin: 8px;
+    place-items: center;
+}
+.content-form input{
+    max-width: 100%;
+    margin: 4px;
+}
