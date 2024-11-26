@@ -1,5 +1,5 @@
-# 🏋️‍♂️ GymTracker
-**GymTracker** es una aplicación diseñada para ayudar a los usuarios a gestionar sus entrenamientos de manera personalizada. Actualmente está en desarrollo y busca proporcionar una experiencia integral para el seguimiento de rutinas y el progreso en el gimnasio.
+# 🏋️‍♂️ IronTrack
+**IronTrack** es una aplicación diseñada para ayudar a los usuarios a gestionar sus entrenamientos de manera personalizada. Actualmente está en desarrollo y busca proporcionar una experiencia integral para el seguimiento de rutinas y el progreso en el gimnasio.
 
 ---
 
@@ -23,7 +23,7 @@ Este proyecto se encuentra en desarrollo activo. Algunas funcionalidades están 
 ---
 
 ## 🤝 Contribución
-¡Tu colaboración es bienvenida! Si tienes ideas o deseas contribuir al desarrollo de **GymTracker**, siéntete libre de hacer un fork del proyecto o abrir issues con sugerencias.
+¡Tu colaboración es bienvenida! Si tienes ideas o deseas contribuir al desarrollo de **IronTrack**, siéntete libre de hacer un fork del proyecto o abrir issues con sugerencias.
 
 ---
 
