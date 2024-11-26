@@ -1,16 +1,11 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from django.contrib.auth import authenticate
-from django.contrib.auth import authenticate
-from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
-from django.db import transaction
-from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.models import User
-from django.views.decorators.csrf import csrf_exempt
-from django.http import JsonResponse
+from django.db import transaction
 from .models import (
     Exercises, ExercisesHistory,
     RoutineExercises, RecordsWeights, Categories, Routines
@@ -21,16 +16,8 @@ from .serializers import (
     RoutineExercisesSerializer, RecordsWeightsSerializer,
     CategoriesSerializer
 )
-from django.middleware.csrf import get_token
 
 
-def csrf(request):
-    return JsonResponse({'csrfToken': get_token(request)})
-
-# Desactiva CSRF para pruebas (ver siguiente punto para protección adecuada)
-
-
-@csrf_exempt
 @api_view(['POST'])
 def login_view(request):
     username = request.data.get('username')
@@ -39,40 +26,29 @@ def login_view(request):
 
     if user is not None:
         refresh = RefreshToken.for_user(user)
-        response = JsonResponse({'detail': 'Success'})
-        response.set_cookie(
-            'access_token',
-            str(refresh.access_token),
-            httponly=True,
-            secure=False,  # Para producción, esto debe ser True (HTTPS)
-            samesite='Strict',
-        )
-        return response
+        return Response({
+            'refresh': str(refresh),
+            'access': str(refresh.access_token)
+        }, status=status.HTTP_200_OK)
     else:
-        return JsonResponse({'detail': 'Invalid credentials'}, status=401)
+        return Response({'detail': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
-@csrf_exempt
 @api_view(['POST'])
 def logout_view(request):
-    response = JsonResponse({'detail': 'Logged out'}, status=200)
-    response.delete_cookie('access_token')  # Elimina la cookie JWT
-    return response
+    return Response({'detail': 'Logged out'}, status=status.HTTP_200_OK)
 
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all().order_by('username')
     serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
-        # Valida datos del User
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        # Asegura que si algo falla no se cree el User
         with transaction.atomic():
-            # Crear el usuario
             user = User(
                 username=serializer.validated_data['username'],
                 email=serializer.validated_data['email']
@@ -81,11 +57,6 @@ class UserViewSet(viewsets.ModelViewSet):
             user.save()
 
         return Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
-
-    def get_queryset(self):
-        # Devolver solo usuario autenticado.
-        user = self.request.user
-        return User.objects.filter(id=user.id)
 
 
 class ExerciseViewSet(viewsets.ModelViewSet):
@@ -99,9 +70,7 @@ class ExerciseHistoryViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        # Filtra el queryset para devolver solo las entradas del usuario autenticado
-        user = self.request.user
-        return ExercisesHistory.objects.filter(user=user)
+        return ExercisesHistory.objects.filter(user=self.request.user)
 
 
 class RoutineViewSet(viewsets.ModelViewSet):
@@ -109,9 +78,7 @@ class RoutineViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        # Filtra el queryset para devolver solo las entradas del usuario autenticado
-        user = self.request.user
-        return Routines.objects.filter(user=user)
+        return Routines.objects.filter(user=self.request.user)
 
 
 class RoutineExercisesViewSet(viewsets.ModelViewSet):
@@ -125,11 +92,10 @@ class RecordWeightViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        user = self.request.user
-        return RecordsWeights.objects.filter(id_user=user.id)
+        return RecordsWeights.objects.filter(id_user=self.request.user.id)
 
 
-class CategorieViewSet(viewsets.ModelViewSet):
+class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Categories.objects.all()
     serializer_class = CategoriesSerializer
     permission_classes = [IsAuthenticated]

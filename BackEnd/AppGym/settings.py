@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
+    'guardian',
     'rest_framework',
     'rest_framework_simplejwt',
     'drf_spectacular',
@@ -57,6 +58,10 @@ TEMPLATES = [
         },
     },
 ]
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',  # Backend por defecto
+    'guardian.backends.ObjectPermissionBackend',  # Backend de Django Guardian
+)
 
 WSGI_APPLICATION = 'AppGym.wsgi.application'
 
@@ -64,14 +69,13 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         # Asegúrate de que esto esté presente
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        # Puedes mantener esto si usas sesiones también
         'rest_framework.authentication.SessionAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
 }
-
+ANONYMOUS_USER_NAME = "AnonYmousUser"
 
 DATABASES = {
     'default': {

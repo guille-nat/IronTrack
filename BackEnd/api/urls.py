@@ -12,13 +12,12 @@ router.register(r'routine-exercises',
                 views.RoutineExercisesViewSet, basename='routineexercise')
 router.register(r'record-weight', views.RecordWeightViewSet,
                 basename='recordweight')
-router.register(r'categories', views.CategorieViewSet, basename='categories')
+router.register(r'categories', views.CategoryViewSet, basename='categories')
 
 
 urlpatterns = [
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
     path('api/', include(router.urls)),
-    path('api/csrf/', views.csrf),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]

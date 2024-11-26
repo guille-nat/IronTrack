@@ -1,6 +1,18 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    birthday = models.DateField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    nationality = models.CharField(max_length=144)
+
+    def __str__(self) -> str:
+        return f"{self.user.username}"
 
 
 class Categories(models.Model):
@@ -61,7 +73,6 @@ class Routines(models.Model):
 
     id_user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='routines')
-    # Cambiado a CharField con opciones
     day = models.CharField(max_length=9, choices=DAYS_OF_WEEK, default='lunes')
 
     def __str__(self) -> str:
@@ -135,3 +146,10 @@ class ExercisesHistory(models.Model):
 
     def __str__(self) -> str:
         return f"{self.id_exercises.name} - {self.date}"
+
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        # Crea automáticamente un perfil para el usuario nuevo
+        UserProfile.objects.create(user=instance)
