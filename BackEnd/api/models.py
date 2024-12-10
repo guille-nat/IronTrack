@@ -3,13 +3,19 @@ from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from guardian.mixins import GuardianUserMixin
 
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    birthday = models.DateField()
+    birthday = models.DateField(auto_now_add=True)
     created_at = models.DateTimeField(auto_now_add=True)
     nationality = models.CharField(max_length=144)
+
+    class Meta:
+        permissions = [
+            ('view_own_profile', 'Can view own Profile'),
+        ]
 
     def __str__(self) -> str:
         return f"{self.user.username}"
@@ -47,7 +53,7 @@ class Exercises(models.Model):
     description = models.TextField(max_length=600)
     sets = models.IntegerField(default=4)
     id_cat = models.ForeignKey(
-        Categories, on_delete=models.CASCADE, related_name='exercises')
+        Categories, on_delete=models.CASCADE, related_name='category')
 
     def __str__(self) -> str:
         return self.name
@@ -58,7 +64,7 @@ class Routines(models.Model):
     Modelo que representa una rutina de ejercicios para un usuario.
 
     Attributes:
-        id_user (ForeignKey): Relación con el modelo User.
+        owner (ForeignKey): Relación con el modelo User.
         day (str): Nombre del día en que se realiza la rutina (Lunes, Martes, etc.).
     """
     DAYS_OF_WEEK = [
@@ -71,9 +77,16 @@ class Routines(models.Model):
         ('domingo', 'Domingo'),
     ]
 
-    id_user = models.ForeignKey(
+    owner = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='routines')
     day = models.CharField(max_length=9, choices=DAYS_OF_WEEK, default='lunes')
+
+    class Meta:
+        permissions = [
+            ("view_routine", "Can view routine"),
+            ("change_routine", "Can change routine"),
+            ("delete_routine", "Can delete routine"),
+        ]
 
     def __str__(self) -> str:
         # Muestra el nombre del día
@@ -107,7 +120,7 @@ class RecordsWeights(models.Model):
         note (str): Notas adicionales sobre el entrenamiento.
         repetitions (int): Número de repeticiones realizadas.
         intensity (str): Intensidad del entrenamiento (baja, media, alta).
-        id_user (ForeignKey): Relación con el modelo User.
+        owner (ForeignKey): Relación con el modelo User.
         id_exercises (ForeignKey): Relación con el modelo Exercises.
     """
     # Asegura que el peso sea positivo
@@ -117,7 +130,7 @@ class RecordsWeights(models.Model):
     repetitions = models.IntegerField()
     # baja, media, alta, excelente entrenamiento
     intensity = models.CharField(max_length=50)
-    id_user = models.ForeignKey(
+    owner = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='records_weights')
     id_exercises = models.ForeignKey(
         Exercises, on_delete=models.CASCADE, related_name='records_weights')
@@ -131,12 +144,12 @@ class ExercisesHistory(models.Model):
     Modelo que representa el historial de ejercicios realizados por un usuario.
 
     Attributes:
-        id_user (ForeignKey): Relación con el modelo User.
+        owner (ForeignKey): Relación con el modelo User.
         id_exercises (ForeignKey): Relación con el modelo Exercises.
         date (date): Fecha en que se realizó el ejercicio.
         weights (float): Peso levantado durante el ejercicio.
     """
-    id_user = models.ForeignKey(
+    owner = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='exercise_history')
     id_exercises = models.ForeignKey(
         Exercises, on_delete=models.CASCADE, related_name='exercise_history')
@@ -146,10 +159,3 @@ class ExercisesHistory(models.Model):
 
     def __str__(self) -> str:
         return f"{self.id_exercises.name} - {self.date}"
-
-
-@receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        # Crea automáticamente un perfil para el usuario nuevo
-        UserProfile.objects.create(user=instance)

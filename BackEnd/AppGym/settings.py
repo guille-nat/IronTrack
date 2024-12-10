@@ -75,16 +75,16 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ],
 }
-ANONYMOUS_USER_NAME = "AnonYmousUser"
+ANONYMOUS_USER_NAME = None
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('POSTGRES_DB'),
-        'USER': os.getenv('POSTGRES_USER'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.getenv('MySQL_DB'),
+        'USER': os.getenv('MySQL_USER'),
+        'PASSWORD': os.getenv('MySQL_PASSWORD'),
         'HOST': 'localhost',
-        'PORT': '5432',
+        'PORT': '3306',
     }
 }
 
