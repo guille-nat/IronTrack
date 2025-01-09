@@ -29,6 +29,7 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         # Extraer los datos del perfil
         profile_data = validated_data.pop('userprofile', None)
+
         # Crear el usuario
         user = User.objects.create_user(
             username=validated_data['username'],
