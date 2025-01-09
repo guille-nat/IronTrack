@@ -12,7 +12,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 INSTALLED_APPS = [
@@ -26,19 +26,20 @@ INSTALLED_APPS = [
     'guardian',
     'rest_framework',
     'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
     'drf_spectacular',
     'api',
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.security.SecurityMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.security.SecurityMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'AppGym.urls'
@@ -67,13 +68,13 @@ WSGI_APPLICATION = 'AppGym.wsgi.application'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        # Asegúrate de que esto esté presente
+
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 ANONYMOUS_USER_NAME = None
 
@@ -103,13 +104,11 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",  # Cambia esto a la URL de tu frontend
-]
-CORS_ALLOW_CREDENTIALS = True
+
+
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'Tu API de Gimnasio',
-    'DESCRIPTION': 'Documentación de la API de tu aplicación de gimnasio.',
+    'TITLE': 'Tu API de IronTrack',
+    'DESCRIPTION': 'Documentación de la API de tu aplicación de IronTrack.',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': True,
     'SECURITY': [{'Bearer': []}],  # Configura JWT como el esquema de seguridad
@@ -117,11 +116,31 @@ SPECTACULAR_SETTINGS = {
     'COMPONENT_SPLIT_REQUEST': True,
 }
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=20),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-    'ROTATE_REFRESH_TOKENS': True,
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=2),
+    'REFRESH_TOKEN_LIFETIME': timedelta(weeks=1),
     'BLACKLIST_AFTER_ROTATION': True,
+
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': os.getenv('SECRET_KEY'),
 }
+
+# CORS_ALLOWED_ORIGINS = [
+#     'http://localhost:5173',  # Reemplaza con la URL de tu frontend
+# ]
+CORS_ALLOW_ALL_ORIGINS = True
+
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',  # Asegúrate de que 'authorization' esté presente
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
 
 
 LANGUAGE_CODE = 'es-ar'
