@@ -1,9 +1,113 @@
-#root{
-  max-width: 1280px;
+*{
+  margin: 0;
+  padding: 0;
 }
-body{
+#root{
   display: flex;
-  place-items: center;
+  width: 100%;
+  flex-direction: column;
+  height: 100%;
+}
+
+::selection {
+  background-color: gray;
+}
+
+.container-login-register {
+  margin: 0 auto;
+  display: flex;
   justify-content: center;
-  height: 100vh;
+  align-items: center;
+}
+
+.form-login-register {
+  width: 400px;
+  height: 100%;
+  margin: 10px;
+  background-image: linear-gradient(to bottom, #424242, #212121);
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  border-radius: 0.5rem;
+}
+
+.title-form-login-register {
+  color: wheat;
+  margin: 3rem 0;
+  font-size: 2rem;
+}
+
+.form-login-register-input {
+  margin: 0.5rem 0;
+  padding: 1rem 0.5rem;
+  width: 18rem;
+  background-color: inherit;
+  color: wheat;
+  border: none;
+  outline: none;
+  border-bottom: 1px solid wheat;
+  transition: all 400ms;
+}
+.form-login-register-input:hover {
+  background-color: #424242;
+  border: none;
+  border-radius: 0.5rem;
+}
+#password-form-login-register{
+  width: calc(18rem - 2rem);
+}
+.button-view-p-form-login-register{
+  width: 2rem;
+  background-color: transparent;
+  border: none;
+  border-radius: 20%;
+  cursor: pointer;
+  box-shadow:
+    0 0 10px antiquewhite,
+    0 0 10px antiquewhite;
+}
+
+.buttons-form-login-register{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-top: 1em;
+  margin-bottom: 3rem;
+}
+.link-form-login-register{
+
+  color: wheat;
+}
+.btn-form-login-register {
+  color: #000000b7;
+  width: 150px;
+  margin-top: 1rem;
+  background-color: wheat;
+  border-radius: 0.5rem;
+  border: none;
+  font-size: 1.2rem;
+  transition: all 400ms;
+  cursor: pointer;
+  box-shadow:
+    0 0 10px antiquewhite,
+    0 0 10px antiquewhite;
+}
+.btn-form-login-register:hover {
+  background-color: antiquewhite;
+  box-shadow: none;
+}
+
+
+.img-logo-home{
+  max-width: 200px;
+}
+.content-home-presentation{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.content-home-presentation p{
+  max-width: 100ch;
 }

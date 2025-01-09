@@ -1,0 +1,82 @@
+nav {
+    background-color: #333; 
+    color: #fff; 
+    padding: 1rem 0; 
+    border-radius: 0 0 20% 20%;
+  }
+  
+  .container-navbar {
+    max-width: 960px; 
+    margin: 0 auto; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+  }
+  
+  .logo-app-navbar {
+    display: flex;
+    font-size: 1.5rem; 
+    font-weight: bold; 
+    color: #fff; 
+    text-decoration: none;
+    align-items: center
+  }
+  .logo-app-navbar img{
+    width: 100px;
+  }
+  
+  .nav-links {
+    list-style: none; 
+    margin: 0; 
+    padding: 0; 
+    display: flex; 
+  }
+  
+  .nav-links li {
+    margin-left: 2rem; 
+  }
+  
+  .nav-links a {
+    color: #fff; 
+    text-decoration: none; 
+  }
+  
+  .hamburger {
+    display: none; /* Ocultar en pantallas grandes */
+    cursor: pointer;
+  }
+  
+  .bar {
+    display: block;
+    width: 25px;
+    height: 3px;
+    margin: 5px auto;
+    background-color: #fff;
+  }
+  
+  /* Estilos para pantallas pequeñas (responsive) */
+  @media (max-width: 768px) {
+    .hamburger {
+      display: block;
+    }
+  
+    .nav-links {
+      position: absolute;
+      top: 100%; 
+      left: 0;
+      background-color: #333;
+      width: 100%;
+      flex-direction: column; 
+      align-items: center;
+      clip-path: circle(0% at 50% 0%); /* Ocultar inicialmente */
+      transition: clip-path 0.5s ease-in-out; 
+    }
+  
+    .nav-links.open {
+      clip-path: circle(100% at 50% 0%); /* Mostrar al hacer clic */
+    }
+  
+    .nav-links li {
+      margin: 1rem 0;
+    }
+  }

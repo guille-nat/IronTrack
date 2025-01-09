@@ -1,31 +1,25 @@
-export const loginUser = async (username, password, csrfToken) => {
-    const response = await fetch('http://127.0.0.1:8000/login/', {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": csrfToken,  // Agrega el token CSRF en las cabeceras
-        },
-        body: JSON.stringify({ username, password }),
-        credentials: 'include',  // Asegúrate de incluir las cookies
-    });
+import axios from 'axios';
+import { ACCESS_TOKEN, API_URL } from '../constants'; 
 
-    if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || "Authentication failed!");
+const api = axios.create({
+    baseURL: API_URL,
+    headers: {
+        'Content-Type': 'application/json',
+    },
+});
+
+//Get access
+api.interceptors.request.use(
+    (config) => {
+        const token = window.localStorage.getItem(ACCESS_TOKEN);
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        };
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
     }
+);
 
-    return response.json(); // Devuelve la respuesta del backend (datos del token, etc.)
-};
-
-
-export const getUser = async () => {
-    const userResponse = await fetch('http://127.0.0.1:8000/api/users/', {
-        method:'GET',
-                headers:{
-                    'Content-Type':'application/json',
-        },
-        credentials: 'include',
-    });
-    return userResponse;
-};
-
+export default api;
