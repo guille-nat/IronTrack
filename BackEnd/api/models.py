@@ -8,7 +8,7 @@ from guardian.mixins import GuardianUserMixin
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    birthday = models.DateField(auto_now_add=True)
+    birthday = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
     nationality = models.CharField(max_length=144)
 
